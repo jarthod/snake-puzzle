@@ -8,6 +8,10 @@ import (
 const Size = 64
 var Angled = [Size]int8{1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1}
 
+var Xchoices = []Vertex{Vertex{0, 1, 0}, Vertex{0, -1, 0}, Vertex{0, 0, 1}, Vertex{0, 0, -1}}
+var Ychoices = []Vertex{Vertex{1, 0, 0}, Vertex{-1, 0, 0}, Vertex{0, 0, 1}, Vertex{0, 0, -1}}
+var Zchoices = []Vertex{Vertex{0, 1, 0}, Vertex{0, -1, 0}, Vertex{1, 0, 0}, Vertex{-1, 0, 0}}
+
 type Vertex struct {
 	X, Y, Z int8
 }
@@ -74,15 +78,15 @@ func solvePuzzle(sol *Solution) (bool) {
 		direction := last_pos.minus(sol.Pos[sol.Placed-2])
 		// fmt.Println("last_pos:", last_pos, "direction:", direction, "angled:", Angled[sol.Placed-1])
 		if Angled[sol.Placed-1] == 1 {
-			choices := []Vertex{}
+			var choices *[]Vertex
 			if direction.X != 0 {
-				choices = []Vertex{Vertex{0, 1, 0}, Vertex{0, -1, 0}, Vertex{0, 0, 1}, Vertex{0, 0, -1}}
+				choices = &Xchoices
 			} else if direction.Y != 0 {
-				choices = []Vertex{Vertex{1, 0, 0}, Vertex{-1, 0, 0}, Vertex{0, 0, 1}, Vertex{0, 0, -1}}
+				choices = &Ychoices
 			} else {
-				choices = []Vertex{Vertex{0, 1, 0}, Vertex{0, -1, 0}, Vertex{1, 0, 0}, Vertex{-1, 0, 0}}
+				choices = &Zchoices
 			}
-			for _, choice := range choices {
+			for _, choice := range *choices {
 				if sol.place(last_pos.plus(choice)) {
 					if solvePuzzle(sol) {
 						return true
